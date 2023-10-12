@@ -68,9 +68,50 @@ def get_dealers_from_cf(url, **kwargs):
     return results
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
-# def get_dealer_by_id_from_cf(url, dealerId):
-# - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
+def get_dealers_reviews_from_cf(url, dealer_id):
+    json_result = get_request(url. dealer_id=dealer_id)
+
+
+def get_dealer_by_id(url, dealer_id):
+    json_result = get_request(url, dealer_id=dealer_id)
+    print('json_result RESTAPIS',json_result)
+
+    if json_result:
+        dealers = json_result
+        
+    
+        dealer_doc = dealers[0]
+        dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"],
+                                dealer_id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"], full_name=dealer_doc["full_name"],
+                                
+                                st=dealer_doc["st"], zip=dealer_doc["zip"], short_name=dealer_doc["short_name"])
+    return dealer_obj
+    
+def get_dealers_by_state(state):
+    # Call get_request with the base URL for dealerships and state parameter
+    url = f"{DEALERSHIP_BASE_URL}?state={state}"
+    json_result = get_request(url)
+
+    results = []
+    if json_result and "docs" in json_result:
+        dealers = json_result["docs"]
+        for dealer in dealers:
+            # Create a CarDealer object with values in `dealer` dictionary
+            dealer_obj = CarDealer(
+                address=dealer.get("address", ""),
+                city=dealer.get("city", ""),
+                full_name=dealer.get("full_name", ""),
+                dealer_id=dealer.get("id", ""),
+                lat=dealer.get("lat", ""),
+                long=dealer.get("long", ""),
+                short_name=dealer.get("short_name", ""),
+                st=dealer.get("st", ""),
+                zip=dealer.get("zip", "")
+            )
+            results.append(dealer_obj)
+
+    return results
 
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
