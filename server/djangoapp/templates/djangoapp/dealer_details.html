@@ -46,11 +46,19 @@
     <!-- Add reviews as cards -->
     <div class="container">
         <h2>Dealer Reviews</h2>
-        <div class="row">
+        <div class="card-columns">
             {% for review in reviews %}
-            <div class="col-md-4">
                 <div class="card">
-                    <img class="card-img-left" src="{% static 'emoji/'|add:review.sentiment|add:'.png' %}" alt="Sentiment Emoji">
+                    {% if review.sentiment == "positive" %}
+                        <img class="card-img-left" src="{{MEDIA_URL}}/emoji/positive.png"
+                         alt="Sentiment image">
+                     {% elif review.sentiment == "negative" %}
+                        <img class="card-img-left" src="{{MEDIA_URL}}/emoji/negative.png"
+                         alt="Sentiment image">                       
+                    {% else %}
+                    <img class="card-img-left" src="{{MEDIA_URL}}/emoji/neutral.png" 
+                         alt="Sentiment image">
+                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ review.car_make }} {{ review.car_model }} ({{ review.car_year }})</h5>
                         <p class="card-text"><strong>Review ID:</strong> {{ review.review_id }}</p>
@@ -61,7 +69,6 @@
                         <p class="card-text"><strong>Sentiment:</strong> {{ review.sentiment }}</p>
                     </div>
                 </div>
-            </div>
             {% endfor %}
             {% if reviews|length == 0 %}
             <div class="col-md-12">
