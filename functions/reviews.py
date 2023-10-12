@@ -3,10 +3,10 @@ from cloudant.query import Query
 from flask import Flask, jsonify, request
 import atexit
 
-# Add your Cloudant service credentials here
-cloudant_username = 'apikey-v2-k1xhitwcmkebvzelp7z21l1x7zsnewn5cykl50ilk8t'
+#Add your Cloudant service credentials here
+cloudant_username = '542d5355-caae-474a-9aba-7ee4a461f0b5-bluemix' #from the cloudant dashboard/reviews/permissions not the service-credentials
 cloudant_api_key = 'vwihyHQ5ekJRB02JUarrC1c8H8CSYDHax-5s9Ymta-mE'
-cloudant_url = 'https://apikey-v2-k1xhitwcmkebvzelp7z21l1x7zsnewn5cykl50ilk8t:56bf52d0826be71246039afa3a46eb19@542d5355-caae-474a-9aba-7ee4a461f0b5-bluemix.cloudantnosqldb.appdomain.cloud'
+cloudant_url = 'https://1dd24389-86fa-455a-8807-ca338308423d-bluemix.cloudantnosqldb.appdomain.cloud'
 client = Cloudant.iam(cloudant_username, cloudant_api_key, connect=True, url=cloudant_url)
 
 session = client.session()
