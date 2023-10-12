@@ -55,34 +55,15 @@ class CarDealer:
         self.zip = zip
     def __str__(self):
         return "Dealer name: " + self.full_name 
-    
+
 class DealerReview:
-
-    def __init__(self, 
-                 dealership, 
-                 name, 
-                 purchase, 
-                 review):
-        # Dealership
-        self.dealership = dealership
-        # Name
-        self.name = name
-        # Purchase
-        self.purchase = purchase
-        # Review
+    def __init__(self, review_id, dealer_id, review, purchase, purchase_date, car_make, car_model, car_year, sentiment):
+        self.review_id = review_id
+        self.dealer_id = dealer_id
         self.review = review
-        # Purchase Date
-        self.purchase_date = '99/99/9999'
-        # Car Make
-        self.car_make = 'N/A'
-        # Car Model
-        self.car_model = 'N/A'
-        # Car Year
-        self.car_year = 9999
-        # Sentiment
-        self.sentiment = ''
-        # ID
-        self.id = 0      
-
-    def __str__(self):
-        return "Review: " + self.review 
+        self.purchase = purchase
+        self.purchase_date = purchase_date
+        self.car_make = car_make
+        self.car_model = car_model
+        self.car_year = car_year
+        self.sentiment = sentiment    

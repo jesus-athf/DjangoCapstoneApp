@@ -10,7 +10,7 @@ from requests.auth import HTTPBasicAuth
 def get_request(url, **kwargs):
     
     # If argument contain API KEY
-    api_key = kwargs.get("vwihyHQ5ekJRB02JUarrC1c8H8CSYDHax-5s9Ymta-mE")
+    api_key = kwargs.get("api_key")
     print("GET from {} ".format(url))
     try:
         if api_key:
@@ -36,7 +36,16 @@ def get_request(url, **kwargs):
     
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
+def post_request(url, json_payload, dealer_id, **kwargs):
+    try:
+        params = {}
+        if dealer_id is not None:
+            params['dealer_id'] = dealer_id
 
+        response = requests.post(url, json=json_payload, params=params, **kwargs)
+        return response
+    except requests.exceptions.RequestException as e:
+        raise Exception(f'Error making POST request: {e}')
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
 # def get_dealers_from_cf(url, **kwargs):
@@ -78,24 +87,24 @@ def get_dealer_reviews_from_cf(url, **kwargs):
         json_result = get_request(url)
     print(json_result)
     if json_result:
-        reviews = json_result
-        for dealer_review in reviews:
-            review_obj = DealerReview(dealership=dealer_review["dealership"], name=dealer_review["name"], purchase=dealer_review["purchase"], review=dealer_review["review"])
-            if "id" in dealer_review:
-                review_obj.id = dealer_review["id"]
-            if "purchase_date" in dealer_review:
-                review_obj.purchase_date = dealer_review["purchase_date"]
-            if "car_make" in dealer_review:
-                review_obj.car_make = dealer_review["car_make"]
-            if "car_model" in dealer_review:
-                review_obj.car_model = dealer_review["car_model"]
-            if "car_year" in dealer_review:
-                review_obj.car_year = dealer_review["car_year"]
-            
-            sentiment = analyze_review_sentiments(review_obj.review)
-            print(sentiment)
-            review_obj.sentiment = sentiment
-            results.append(review_obj)
+        for review_data in json_result:
+            # Check if all required fields exist in review_data
+            if "id" in review_data and "dealership" in review_data and "review" in review_data \
+                    and "purchase" in review_data and "purchase_date" in review_data \
+                    and "car_make" in review_data and "car_model" in review_data and "car_year" in review_data:
+                # If all fields are available, create the DealerReview object
+                dealer_review = DealerReview(
+                    review_id=review_data["id"],
+                    dealer_id=review_data["dealership"],
+                    review=review_data["review"],
+                    purchase=review_data["purchase"],
+                    purchase_date=review_data["purchase_date"],
+                    car_make=review_data["car_make"],
+                    car_model=review_data["car_model"],
+                    car_year=review_data["car_year"],
+                    sentiment=None
+                )
+                results.append(dealer_review)
 
     return results
 
@@ -141,9 +150,40 @@ def get_dealers_by_state(state):
 
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
-# - Call get_request() with specified arguments
-# - Get the returned sentiment label such as Positive or Negative
+def analyze_review_sentiments(dealerreview):
+    # Define the URL for sentiment analysis
+    url = 'https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/e5b1b5b2-71df-425f-9427-f2e466ac8a35'
+
+    # Debugging: Print the review text
+    print("Review Text:", dealerreview.review)
+    # Construct the parameters from the dealerreview object
+    params = {
+        "text": dealerreview.review,
+        "version": "2022-04-07",
+        "features": "sentiment",
+        "return_analyzed_text": True
+    }
+
+    # Your API key for Watson NLU
+    api_key = 'AzkX9wDCuhaRi19BXNyLhhAolICTQU7nAcl666D1isJG'
+
+    try:
+        # Make the GET request to Watson NLU
+        response = get_request(url, api_key=api_key, **params)
+        
+        print("API Response:", response)  # Print the response for debugging
+
+        # Check if the response is successful
+        if "sentiment" in response:
+            sentiment = response["sentiment"]["document"]["label"]
+            print("Sentiment:", sentiment)  # Print the extracted sentiment for debugging
+            return sentiment
+        else:
+            return None
+    except Exception as e:
+        # Handle any exceptions here
+        print("Error analyzing sentiment:", str(e))
+        return None
 
 
 
