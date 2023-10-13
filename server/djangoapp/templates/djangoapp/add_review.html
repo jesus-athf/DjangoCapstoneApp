@@ -20,14 +20,13 @@
     <div class="container mt-5">
       <h2>Add a Review</h2>
       <form
-        method="post"
+        method="POST"
         action="{% url 'djangoapp:add_review' dealer.dealer_id%}"
         class="mt-4"
       >
         {% csrf_token %}
 
-        <div class="form-group">
-          <label for="review">Enter the review Content:</label>
+          <label for="content">Enter the review Content:</label>
           <textarea
             class="form-control"
             id="content"
@@ -35,8 +34,6 @@
             rows="2"
             required
           ></textarea>
-        </div>
-        <div class="form-group">
             <label for="purchase_date">Select a Purchase Date:</label>
             <br>
             <input
@@ -48,31 +45,27 @@
             />
             <script type="text/javascript">
                 $('.date-own').datepicker({
-                   format: 'mm/dd/yyyy'
-                 });
-           </script>
-          </div>  
-        <div class="form-group">
-          <label for="purchase_check">Has purchased a car from this Dealer?</label>
-          <br>
-          <input
+                format: 'mm/dd/yyyy'
+                });
+            </script>
+            <input
             type="checkbox"
-            class="form-check-input"
+            class="form-check-inline form-check-input"
             id="purchase_check"
             name="purchase_check"
             required
-          />
-        </div>
-        <div class="form-group>
-        <select name="car" id="car" class="form-select" required>
+            />  
+            <label for="purchase_check">Has purchased a car from this Dealer?</label>
+            <br>
+            <label>Select a car (model-make-year)</label>
+            <br>
             <select name="car" id="car" class="form-select" required>
-                {% for car in cars %}
-                    <option selected value={{car.id}}>{{car.name}}-{{car.make.name}}-{{ car.year|date:"Y" }}</option>
-                {% endfor %}
-           </select>
-          </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    {% for car in cars %}
+                        <option selected value={{car.id}}>{{car.name}}-{{car.make.name}}-{{ car.year|date:"Y" }}</option>
+                    {% endfor %}
+            </select>
+            <br>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
       </form>
     </div>
   </body>

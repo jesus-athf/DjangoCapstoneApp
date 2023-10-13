@@ -125,8 +125,8 @@ def get_dealer_by_id(url, dealer_id):
     
 def get_dealers_by_state(state):
     # Call get_request with the base URL for dealerships and state parameter
-    url = f"{DEALERSHIP_BASE_URL}?state={state}"
-    json_result = get_request(url)
+    url = "https://michischaetz-3000.theiadocker-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+    json_result = get_request(url, state=state)
 
     results = []
     if json_result and "docs" in json_result:
